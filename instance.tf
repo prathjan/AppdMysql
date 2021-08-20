@@ -135,6 +135,10 @@ output "vm_name" {
   value = vsphere_virtual_machine.vm_deploy.*.name
 }
 
+output "vm_ip" {
+  value = vsphere_virtual_machine.vm_deploy.*.default_ip_address
+}
+
 locals {
   mysql_pass = yamldecode(data.terraform_remote_state.global.outputs.mysql_pass)
 }
