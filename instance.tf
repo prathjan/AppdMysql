@@ -91,8 +91,41 @@ resource "vsphere_virtual_machine" "vm_deploy" {
 }
 
 
+resource "null_resource" "vm_node_init" {
+  provisioner "file" {
+    source = "scripts/installmysql.sh"
+    destination = "/tmp/installmysql.sh local.mysql_pass"
+    connection {
+      type = "ssh"
+      host = "${vsphere_virtual_machine.vm_deploy[count.index].default_ip_address}"
+      user = "root"
+      password = "${var.root_password}"
+      port = "22"
+      agent = false
+    }
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+        "chmod +x /tmp/installmysql.sh",
+        "/tmp/installmysql.sh ${var.mysql_password}",
+    ]
+    connection {
+      type = "ssh"
+      host = "${vsphere_virtual_machine.vm_deploy.default_ip_address}"
+      user = "root"
+      password = "${var.root_password}"
+      port = "22"
+      agent = false
+    }
+  }
+
+}
+
 output "vm_name" {
   value = vsphere_virtual_machine.vm_deploy.*.name
 }
 
-
+locals {
+  mysql_pass = yamldecode(data.terraform_remote_state.global.outputs.mysql_pass)
+}
