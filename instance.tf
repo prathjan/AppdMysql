@@ -117,7 +117,7 @@ resource "null_resource" "vm_node_init" {
   provisioner "remote-exec" {
     inline = [
         "chmod +x /tmp/installmysql.sh",
-        "/tmp/installmysql.sh ${local.mysql_pass}",
+        "/tmp/installmysql.sh ${local.mysql_pass} teadb teauser teapassword",
     ]
     connection {
       type = "ssh"
