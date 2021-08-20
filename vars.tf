@@ -73,4 +73,7 @@ variable "vm_domain" {
 variable "root_password" {
   type = string
 }
+variable "mysql_pass" {
+  type = string
+}
 

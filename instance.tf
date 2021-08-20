@@ -97,7 +97,7 @@ resource "null_resource" "vm_node_init" {
     destination = "/tmp/installmysql.sh local.mysql_pass"
     connection {
       type = "ssh"
-      host = "${vsphere_virtual_machine.vm_deploy[count.index].default_ip_address}"
+      host = "${vsphere_virtual_machine.vm_deploy.default_ip_address}"
       user = "root"
       password = "${var.root_password}"
       port = "22"
