@@ -1,3 +1,12 @@
+data "terraform_remote_state" "global" {
+  backend = "remote"
+  config = {
+    organization = "Lab14"
+    workspaces = {
+      name = var.globalwsname
+    }
+  }
+}
 
 # Configure the VMware vSphere Provider
 provider "vsphere" {
@@ -94,7 +103,7 @@ resource "vsphere_virtual_machine" "vm_deploy" {
 resource "null_resource" "vm_node_init" {
   provisioner "file" {
     source = "scripts/installmysql.sh"
-    destination = "/tmp/installmysql.sh local.mysql_pass"
+    destination = "/tmp/installmysql.sh"
     connection {
       type = "ssh"
       host = "${vsphere_virtual_machine.vm_deploy.default_ip_address}"
@@ -108,7 +117,7 @@ resource "null_resource" "vm_node_init" {
   provisioner "remote-exec" {
     inline = [
         "chmod +x /tmp/installmysql.sh",
-        "/tmp/installmysql.sh ${var.mysql_password}",
+        "/tmp/installmysql.sh local.mysql_pass",
     ]
     connection {
       type = "ssh"
